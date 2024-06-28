@@ -1,4 +1,3 @@
-```markdown
 # English to Vietnamese Subtitle Translation using Gemini API
 
 ## Description
