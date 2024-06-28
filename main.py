@@ -3,7 +3,7 @@ import os
 import json
 import google.generativeai as genai
 
-API_KEY = 'AIzaSyC_aH3lFSnxw4B0I765abLm-SDrO9OGz0I'
+API_KEY = 'TODO'
 genai.configure(api_key=API_KEY)
 
 app = Flask(__name__)

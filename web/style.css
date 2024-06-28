@@ -133,6 +133,36 @@ button {
   opacity: 1;
 }
 
+/* Ẩn input file mặc định */
+/* input[type="file"] {
+  display: none;
+} */
+
+/* Tạo kiểu cho label */
+.custom-file-upload {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 0 0;
+  font-family: unset;
+  font-size: 16px;
+  display: inline-block;
+  cursor: pointer;
+  background-color: #2f4760;
+  color: white;
+  text-align: center;
+}
+
+/* Thay đổi màu nền khi hover */
+.custom-file-upload:hover {
+  background-color: #6b839d;
+}
+
+/* Thêm biểu tượng vào nút chọn tệp */
+.custom-file-upload i {
+  margin-right: 8px;
+}
+
+
 /* button:focus-visible {
   outline: 2px solid white;
   outline-offset: -4px;

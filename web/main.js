@@ -75,16 +75,59 @@ form.onsubmit = async (ev) => {
   }
 };
 
+
 downloadBtn.onclick = () => {
-  let srtText = jsonToSrt(JSON.parse(resultText));
-  let blob = new Blob([srtText], { type: 'text/plain' });
-  let url = URL.createObjectURL(blob);
-  let a = document.createElement('a');
-  a.href = url;
-  a.download = 'result.srt';
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
+  try {
+    // Thay thế các chuỗi không chính xác để tạo thành chuỗi JSON hợp lệ
+    let validJsonString = resultText
+      .replace(/]\s*,\s*{\s*/g, '},{')
+      .replace(/}\s*\[/g, '},')
+      .replace(/}\s*\]\s*{/g, '},{')
+      .replace(/}\s*\[\s*{/g, '},{')
+      .replace(/]\s*\}\s*\{s*\[/g, '},{')
+      .replace(/}\s*{/g, '},{')
+      .replace(/]\s*\[/g, ',')
+      .replace(/\)/g, '}')
+      .replace(/\(/g, '{')
+      .replace(/'/g, '"')
+      .replace(/]\s*,\s*\{/g, '},{')
+      .replace(/\]\s*\}\s*,\s*\{/g, '},{');
+
+    console.log('Valid JSON String:', validJsonString); // Debug: In chuỗi JSON hợp lệ
+
+    // Chuyển đổi chuỗi JSON thành đối tượng JSON
+    let jsonData = JSON.parse(`[${validJsonString}]`);
+
+    // Kiểm tra nếu jsonData là mảng lồng nhau thì lấy mảng con đầu tiên
+    if (Array.isArray(jsonData) && Array.isArray(jsonData[0])) {
+      jsonData = jsonData[0];
+    }
+
+    console.log('Parsed JSON Data:', jsonData); // Debug: In dữ liệu JSON đã được phân tích
+
+    // Chuyển đổi JSON sang SRT
+    let srtText = jsonToSrt(jsonData);
+    if (!srtText) {
+      throw new Error('Failed to generate SRT text');
+    }
+    // Tạo blob từ văn bản SRT
+    let blob = new Blob([srtText], { type: 'text/plain' });
+    console.log('SRT Text:', srtText); // Debug: In văn bản SRT
+
+    // Tạo URL từ blob
+    let url = URL.createObjectURL(blob);
+
+    // Tạo phần tử <a> để tải xuống
+    let a = document.createElement('a');
+    a.href = url;
+    a.download = 'result.srt';
+    document.body.appendChild(a); // Thêm phần tử <a> vào body
+    a.click(); // Click vào phần tử <a> để tải xuống file
+    document.body.removeChild(a); // Xóa phần tử <a> sau khi tải xuống
+  } catch (error) {
+    console.error("Failed to download file:", error);
+    output.innerHTML += `<hr>Failed to download file: ${error.message}`;
+  }
 };
 
 async function* streamResponseChunks(response) {
